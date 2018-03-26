@@ -9,7 +9,7 @@
         <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>com.sun.jersey.config.property.packages</param-name>
-            <param-value>com.mkyong.rest</param-value>
+            <param-value>ie.dcu.controller</param-value>
         </init-param>
         <init-param>
             <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
@@ -20,7 +20,7 @@
 
     <servlet-mapping>
         <servlet-name>jersey-serlvet</servlet-name>
-        <url-pattern>/rest/*</url-pattern>
+        <url-pattern>/ca4006/*</url-pattern>
     </servlet-mapping>
 
 </web-app>

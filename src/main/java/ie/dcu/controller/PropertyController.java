@@ -12,11 +12,11 @@ public class PropertyController {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Property getProperty(@PathParam("id") String id) {
+    public Response getProperty(@PathParam("id") String id) {
 
         //TODO get a property from storage based on the id passed in
 
-        return new Property();
+        return Response.status(201).entity(new Property()).build();
 
     }
 
