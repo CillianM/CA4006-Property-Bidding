@@ -1,75 +1,68 @@
 package ie.dcu.service;
 
-import org.apache.commons.io.FileUtils;
+import ie.dcu.model.Bid;
+import ie.dcu.model.Property;
+import ie.dcu.model.User;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.UUID;
 
 public class StorageService {
-    private String uploadPathString = "/home/cillian/uploads/";
+    private static HashMap<String, Property> propertyList = new HashMap<>();
+    private static HashMap<String, User> userList = new HashMap<>();
+    private static HashMap<String, LinkedHashMap<String, Bid>> bidList = new HashMap<>();
 
-    private Path uploadPath;
-
-    public StorageService() {
-
-        this.uploadPath = Paths.get(uploadPathString);
-    }
-
-    private List<File> getFileList() {
-        File f = new File(uploadPathString);
-        if (f.exists())
-            return new ArrayList<>(Arrays.asList(f.listFiles()));
-        else
-            return Collections.emptyList();
-    }
-
-    public String saveData(String data) {
-        String name = getUUID();
-        String path = uploadPathString + name;
-
-        try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(path), "utf-8"))) {
-            writer.write(data);
-        } catch (IOException e) {
-            return null;
-        }
-        return path;
-    }
-
-    private String getUUID() {
+    private static String getNewId() {
         return UUID.randomUUID().toString();
     }
 
-    public String loadData(String filePath) {
-        StringBuilder resultStringBuilder = new StringBuilder();
-        try (BufferedReader br
-                     = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                resultStringBuilder.append(line).append("\n");
-            }
-        } catch (IOException e) {
-            return null;
-        }
-        return resultStringBuilder.toString();
+    public static User createUser(User user) {
+        String uuid = getNewId();
+        user.setId(uuid);
+        userList.put(uuid, user);
+        return user;
     }
 
-    public void deleteAll() {
-        try {
-            FileUtils.deleteDirectory(uploadPath.toFile());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static void updateUser(User user) {
+        userList.put(user.getId(), user);
     }
 
-    public void init() {
-        try {
-            deleteAll();
-            Files.createDirectories(uploadPath);
-        } catch (IOException e) {
-        }
+    public static User getUser(String id) {
+        return userList.get(id);
+    }
+
+    public static Property createProperty(Property property) {
+        String uuid = getNewId();
+        property.setId(uuid);
+        propertyList.put(uuid, property);
+        return property;
+    }
+
+    public static void updateProperty(Property property) {
+        propertyList.put(property.getId(), property);
+    }
+
+    public static Property getProperty(String id) {
+        return propertyList.get(id);
+    }
+
+    public static LinkedHashMap<String, Bid> addBid(String propertyId, Bid bid) {
+        String uuid = getNewId();
+        bid.setId(uuid);
+        LinkedHashMap<String, Bid> propertyBids = bidList.getOrDefault(propertyId, new LinkedHashMap<>());
+        propertyBids.put(uuid, bid);
+        bidList.put(propertyId, propertyBids);
+        return propertyBids;
+    }
+
+    public static LinkedHashMap<String, Bid> removeBid(String propertyId, Bid bid) {
+        LinkedHashMap<String, Bid> propertyBids = bidList.getOrDefault(propertyId, new LinkedHashMap<>());
+        propertyBids.remove(bid.getPropertyId());
+        return bidList.put(propertyId, propertyBids);
+    }
+
+    public static LinkedHashMap<String, Bid> getPropertyBids(String propertyId) {
+        return bidList.get(propertyId);
     }
 }

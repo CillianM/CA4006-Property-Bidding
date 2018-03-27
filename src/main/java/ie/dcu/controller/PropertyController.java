@@ -1,6 +1,7 @@
 package ie.dcu.controller;
 
 import ie.dcu.model.Property;
+import ie.dcu.service.StorageService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -13,19 +14,18 @@ public class PropertyController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getProperty(@PathParam("id") String id) {
-
-        //TODO get a property from storage based on the id passed in
-
-        return Response.status(201).entity(new Property()).build();
+        Property property = StorageService.getProperty(id);
+        if (property != null)
+            return Response.status(200).entity(property).build();
+        else
+            return Response.status(404).build();
 
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response createProperty(Property property) {
-
-        //TODO validate and save the property
-        return Response.status(201).entity(new Property()).build();
-
+        return Response.status(201).entity(StorageService.createProperty(property)).build();
     }
 }
