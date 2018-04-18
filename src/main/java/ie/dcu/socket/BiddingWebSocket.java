@@ -20,11 +20,9 @@ public class BiddingWebSocket {
     @OnMessage
     public String onMessage(String message, Session session, @PathParam("propertyId") String propertyId) {
         try {
-            System.out.println("received message from client " + propertyId);
             for (Session s : peers.get(propertyId)) {
                 try {
                     s.getBasicRemote().sendText(message);
-                    System.out.println("send message to peer ");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -38,8 +36,7 @@ public class BiddingWebSocket {
 
     @OnOpen
     public void onOpen(Session session, @PathParam("propertyId") String propertyId) {
-        System.out.println("mediator: opened websocket channel for client " + propertyId);
-        Set<Session> peerSessions = Collections.synchronizedSet(new HashSet());
+        Set<Session> peerSessions;
         peerSessions = peers.get(propertyId);
         if (peerSessions == null) {
             peerSessions = Collections.synchronizedSet(new HashSet());
@@ -56,7 +53,6 @@ public class BiddingWebSocket {
 
     @OnClose
     public void onClose(Session session, @PathParam("propertyId") String propertyId) {
-        System.out.println("mediator: closed websocket channel for client " + propertyId);
         peers.get(propertyId).remove(session);
     }
 }

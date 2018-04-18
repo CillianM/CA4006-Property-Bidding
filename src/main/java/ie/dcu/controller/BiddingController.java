@@ -1,11 +1,14 @@
 package ie.dcu.controller;
 
 import ie.dcu.model.Bid;
+import ie.dcu.security.AuthProvider;
 import ie.dcu.service.StorageService;
 import ie.dcu.socket.BiddingClientSocket;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
@@ -68,12 +71,48 @@ public class BiddingController {
 
     @GET
     @Path("/{id}")
-    public Response getPropertyBids(@PathParam("id") String propertyId) {
-        //TODO return bids for a propertyId
+    public Response getPropertyBids(@Context HttpServletRequest request,@PathParam("id") String propertyId) {
+        if(!AuthProvider.isValidUser(request)){
+            return Response.status(401).build();
+        }
         ObjectMapper mapper = new ObjectMapper();
         String bidJson = "";
         try {
             bidJson = mapper.writeValueAsString(StorageService.getPropertyBids(propertyId));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Response.status(200).entity(bidJson).build();
+    }
+
+    @GET
+    @Path("/{id}/{username}")
+    public Response getUserPropertyBids(@Context HttpServletRequest request,@PathParam("id") String propertyId,@PathParam("id") String username) {
+        if(!AuthProvider.isValidUser(request)){
+            return Response.status(401).build();
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        String bidJson = "";
+        try {
+            List<Bid>  userPropertyBids = StorageService.getUserPropertyBids(propertyId,username);
+            bidJson = mapper.writeValueAsString(userPropertyBids);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Response.status(200).entity(bidJson).build();
+    }
+
+    @GET
+    @Path("/user/{username}")
+    public Response getUserBids(@Context HttpServletRequest request,@PathParam("username") String username) {
+        if(!AuthProvider.isValidUser(request)){
+            return Response.status(401).build();
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        String bidJson = "";
+        try {
+            List<Bid>  userPropertyBids = StorageService.getUserBids(username);
+            bidJson = mapper.writeValueAsString(userPropertyBids);
         } catch (IOException e) {
             e.printStackTrace();
         }

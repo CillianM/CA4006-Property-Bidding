@@ -1,11 +1,13 @@
 package ie.dcu.model;
 
+import java.util.Date;
+
 public class Bid {
     private String id;
     private String userId;
     private String propertyId;
     private double value;
-    private String createdDate;
+    private Date createdDate;
     private String bidStatus;
 
     public Bid() {
@@ -35,14 +37,6 @@ public class Bid {
         this.value = value;
     }
 
-    public String getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(String createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public String getBidStatus() {
         return bidStatus;
     }
@@ -57,5 +51,13 @@ public class Bid {
 
     public void setPropertyId(String propertyId) {
         this.propertyId = propertyId;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 }

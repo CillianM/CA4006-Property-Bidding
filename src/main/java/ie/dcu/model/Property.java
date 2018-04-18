@@ -1,21 +1,26 @@
 package ie.dcu.model;
 
+import java.util.Date;
+
 public class Property {
 
     private String id;
     private String name;
-    private String type;
+    private String creator;
+    private String propertyType;
     private String areaCode;
-    private int price;
+    private int bedroomCount;
+    private double price;
+    private Date biddingExpiry;
 
     public Property() {
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
@@ -27,12 +32,12 @@ public class Property {
         this.areaCode = areaCode;
     }
 
-    public String getType() {
-        return type;
+    public String getPropertyType() {
+        return propertyType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setPropertyType(String propertyType) {
+        this.propertyType = propertyType;
     }
 
     public String getName() {
@@ -49,5 +54,29 @@ public class Property {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public int getBedroomCount() {
+        return bedroomCount;
+    }
+
+    public void setBedroomCount(int bedroomCount) {
+        this.bedroomCount = bedroomCount;
+    }
+
+    public Date getBiddingExpiry() {
+        return biddingExpiry;
+    }
+
+    public void setBiddingExpiry(Date biddingExpiry) {
+        this.biddingExpiry = biddingExpiry;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 }

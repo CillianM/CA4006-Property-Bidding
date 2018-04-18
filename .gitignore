@@ -1,7 +1,7 @@
 out/
 .idea/
 target/
-src/main/webapp/node_modules/
+ui/node_modules/
 
 # CMake
 cmake-build-debug/
