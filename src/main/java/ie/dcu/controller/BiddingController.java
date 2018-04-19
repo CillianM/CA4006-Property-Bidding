@@ -1,11 +1,14 @@
 package ie.dcu.controller;
 
 import ie.dcu.model.Bid;
+import ie.dcu.security.AuthProvider;
 import ie.dcu.service.StorageService;
 import ie.dcu.socket.BiddingClientSocket;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
@@ -51,7 +54,10 @@ public class BiddingController {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createBid(Bid bid) {
+    public Response createBid(@Context HttpServletRequest request, Bid bid) {
+        if (!AuthProvider.isValidUser(request)) {
+            return Response.status(401).build();
+        }
         System.out.println("received event:" + bid);
         LinkedHashMap<String, Bid> propertyBids = StorageService.addBid(bid.getPropertyId(), bid);
         List<Bid> bidList = new ArrayList<>(propertyBids.values());
@@ -68,15 +74,28 @@ public class BiddingController {
 
     @GET
     @Path("/{id}")
-    public Response getPropertyBids(@PathParam("id") String propertyId) {
-        //TODO return bids for a propertyId
-        ObjectMapper mapper = new ObjectMapper();
-        String bidJson = "";
-        try {
-            bidJson = mapper.writeValueAsString(StorageService.getPropertyBids(propertyId));
-        } catch (IOException e) {
-            e.printStackTrace();
+    public Response getPropertyBids(@Context HttpServletRequest request, @PathParam("id") String propertyId) throws Exception {
+        if(!AuthProvider.isValidUser(request)){
+            return Response.status(401).build();
         }
-        return Response.status(200).entity(bidJson).build();
+        return Response.status(200).entity(new ObjectMapper().writeValueAsString(StorageService.getPropertyBids(propertyId))).build();
+    }
+
+    @GET
+    @Path("/{id}/{username}")
+    public Response getUserPropertyBids(@Context HttpServletRequest request, @PathParam("id") String propertyId, @PathParam("id") String username) throws Exception {
+        if(!AuthProvider.isValidUser(request)){
+            return Response.status(401).build();
+        }
+        return Response.status(200).entity(new ObjectMapper().writeValueAsString(StorageService.getUserPropertyBids(propertyId, username))).build();
+    }
+
+    @GET
+    @Path("/user/{username}")
+    public Response getUserBids(@Context HttpServletRequest request, @PathParam("username") String username) throws Exception {
+        if(!AuthProvider.isValidUser(request)){
+            return Response.status(401).build();
+        }
+        return Response.status(200).entity(new ObjectMapper().writeValueAsString(StorageService.getUserBids(username))).build();
     }
 }

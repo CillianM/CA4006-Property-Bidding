@@ -1,0 +1,40 @@
+<div class="background"></div>
+<div class="login-page">
+  
+  <div class="form">
+    <img src="assets/logo.png" style="width:60%; height:60%">
+    <br><br>
+    <form class="login-form">
+      <input #loginusername type="text" placeholder="username"/>
+      <input #loginpassword type="password" placeholder="password"/>
+      <button id="login-button" (click)="loginUser(loginusername.value,loginpassword.value)">Login</button>
+      <button id="create-button" (click)="show()">Create User</button>
+    </form>
+  </div>
+</div>
+
+<div (click)="onContainerClicked($event)" class="modal fade" tabindex="-1" [ngClass]="{'show': visibleAnimate}"
+      [ngStyle]="{'display': visible ? 'block' : 'none', 'opacity': visibleAnimate ? 1 : 0}">
+  <div class="">
+    <div class="modal-content">
+      <div class="modal-header">
+            <h2>Create User</h2>
+      </div>
+      <div class="modal-body">
+          <form>
+              <div class="form-group">
+                <input #username type="text"class="name-input" placeholder="Name" >
+                <input #password type="password"class="name-input" placeholder="Password" >
+              </div>
+            </form>
+            <div class="button-container">
+              <button type="button" class="create-button" (click)="createUser(username.value,password.value)">
+                <span>Submit</span>
+              </button>
+            </div>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
