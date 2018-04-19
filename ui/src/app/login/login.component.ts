@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { UserService } from '../services/user-service';
-import { User } from '../models/user';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {UserService} from '../services/user-service';
+import {User} from '../models/user';
 import {CookieService} from 'angular2-cookie/core';
-import { Token } from '../models/token';
-import { LocalStorageService } from 'angular-2-local-storage';
+import {Token} from '../models/token';
+import {LocalStorageService} from 'angular-2-local-storage';
 
 
 @Component({
@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit {
   updateParty(i:number){
     this.selectedParty = i;
   }
-  
+
   updateSelectedTypes(i:number){
     this.selectedTypes[i] = !this.selectedTypes[i];
   }
@@ -95,7 +95,7 @@ export class LoginComponent implements OnInit {
     this.userService.createUser(this.user)
     .subscribe(
       returnedUser => {
-        this.user = returnedUser, 
+        this.user = returnedUser,
         console.log(returnedUser)
         this.hide();
       });
@@ -110,10 +110,11 @@ export class LoginComponent implements OnInit {
     this.userService.loginUser(username,password)
     .subscribe(
       returnedToken => {
-        this.token = returnedToken, 
+        this.token = returnedToken,
         console.log(returnedToken)
-        this.localStorageService.set("ca4006Token", returnedToken);
-        this.hide();
+        this.localStorageService.set("token", returnedToken);
+        this.localStorageService.set("user", username);
+        window.location.href = "/ui/property"
       });
       err => console.log(err);
   }

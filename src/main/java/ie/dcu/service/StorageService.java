@@ -46,7 +46,7 @@ public class StorageService {
         return userList.get(id);
     }
 
-    public static Collection<User> getUsers() {
+    public static List<User> getUsers() {
         List<User> users = new ArrayList<>();
         for(User user: userList.values()){
             user.setPassword("");
@@ -81,8 +81,8 @@ public class StorageService {
         return userProperties;
     }
 
-    public static Collection<Property> getProperties() {
-        return propertyList.values();
+    public static List<Property> getProperties() {
+        return new ArrayList<>(propertyList.values());
     }
 
     public static LinkedHashMap<String, Bid> addBid(String propertyId, Bid bid) {

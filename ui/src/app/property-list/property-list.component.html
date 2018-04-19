@@ -1,3 +1,93 @@
-<p>
-  property-list works!
-</p>
+<div style="padding:0 16px;">
+  <ul class="table-title">
+    <li><h2>Available Properties</h2></li>
+    <li class="right">
+      <button class="create-button right" (click)="show()">Create Property</button>
+    </li>
+  </ul>
+  <table class="table">
+    <thead class="thead-dark">
+    <tr>
+      <th class="col">Name</th>
+      <th class="col">Type</th>
+      <th class="col">Area Code</th>
+      <th class="col">Current Price</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let property of propertyList">
+      <th scope="row" class="column"><a routerLink="{{property.id}}" routerLinkActive="active">{{property.name}}</a>
+      </th>
+      <td class="column">{{property.propertyType}}</td>
+      <td class="column">{{property.areaCode}}</td>
+      <td class="column">{{property.price}}</td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
+
+<div (click)="onContainerClicked($event)" class="modal fade" tabindex="-1" [ngClass]="{'show': visibleAnimate}"
+     [ngStyle]="{'display': visible ? 'block' : 'none', 'opacity': visibleAnimate ? 1 : 0}">
+  <div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Create Property</h2>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="propertyForm" novalidate (ngSubmit)="save(propertyForm.value, propertyForm.valid)">
+          <div class="form-group">
+            <label for="">Name</label>
+            <input type="text" class="form-control" formControlName="name">
+            <small [hidden]="propertyForm.controls.name.valid || (propertyForm.controls.name.pristine && !submitted)"
+                   class="text-danger">
+              Name is required (minimum 5 characters).
+            </small>
+            <!--<pre class="margin-20">{{ propertyForm.controls.name.errors | json }}</pre>-->
+          </div>
+          <div class="form-group">
+            <label for="">Property Type</label>
+            <select class="form-control" formControlName="propertyType">
+              <option selected value="HOUSE">House</option>
+              <option value="APARTMENT">Apartment</option>
+            </select>
+            <small
+              [hidden]="propertyForm.controls.propertyType.valid || (propertyForm.controls.propertyType.pristine && !submitted)"
+              class="text-danger">
+              Property Type is required.
+            </small>
+          </div>
+          <div class="form-group">
+            <label for="">Area Code</label>
+            <input type="text" class="form-control" formControlName="areaCode">
+            <small
+              [hidden]="propertyForm.controls.areaCode.valid || (propertyForm.controls.areaCode.pristine && !submitted)"
+              class="text-danger">
+              Area Code Type is required (minimum 2 characters).
+            </small>
+          </div>
+          <div class="form-group">
+            <label for="">Bedroom Count</label>
+            <input type="number" class="form-control" formControlName="bedroomCount">
+          </div>
+          <div class="form-group">
+            <label for="">Asking Price</label>
+            <input type="number" min="0.01" step="0.01" class="form-control" formControlName="price">
+          </div>
+          <div class="form-group">
+            <label for="">Bidding Expiry</label>
+            <input type="datetime-local" class="form-control" formControlName="biddingExpiry" value="2018-04-22">
+          </div>
+          <div class="button-container">
+            <button type="submit" class="create-button">
+              <span>Submit</span>
+            </button>
+          </div>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>

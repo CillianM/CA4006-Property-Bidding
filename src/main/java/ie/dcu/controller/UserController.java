@@ -1,22 +1,15 @@
 package ie.dcu.controller;
 
-import ie.dcu.model.Bid;
 import ie.dcu.model.User;
 import ie.dcu.security.AuthProvider;
 import ie.dcu.service.StorageService;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Collection;
-import java.util.List;
 
 @Path("/user")
 public class UserController {
@@ -24,25 +17,17 @@ public class UserController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUsers() {
-        ObjectMapper mapper = new ObjectMapper();
-        String bidJson = "";
-        try {
-            Collection<User> users = StorageService.getUsers();
-            bidJson = mapper.writeValueAsString(users);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return Response.status(200).entity(bidJson).build();
+    public Response getUsers() throws Exception {
+        return Response.status(200).entity(new ObjectMapper().writeValueAsString(StorageService.getUsers())).build();
     }
 
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUser(@PathParam("id") String id) {
+    public Response getUser(@PathParam("id") String id) throws Exception {
         User user = StorageService.getUser(id);
         if (user != null)
-            return Response.status(200).entity(user).build();
+            return Response.status(200).entity(new ObjectMapper().writeValueAsString(user)).build();
         else
             return Response.status(404).build();
     }
@@ -54,8 +39,7 @@ public class UserController {
         if(!AuthProvider.isValidLogin(request)){
             return Response.status(401).build();
         }
-        ObjectMapper mapper = new ObjectMapper();
-        return Response.status(200).entity(mapper.writeValueAsString(StorageService.createUserToken(username))).build();
+        return Response.status(200).entity(new ObjectMapper().writeValueAsString(StorageService.createUserToken(username))).build();
     }
 
     @DELETE
@@ -72,10 +56,10 @@ public class UserController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createUser(User user) {
+    public Response createUser(User user) throws Exception {
         user.setPassword(AuthProvider.hashString(user.getPassword()));
         StorageService.createUser(user);
         user.setPassword("");
-        return Response.status(201).entity(user).build();
+        return Response.status(201).entity(new ObjectMapper().writeValueAsString(user)).build();
     }
 }

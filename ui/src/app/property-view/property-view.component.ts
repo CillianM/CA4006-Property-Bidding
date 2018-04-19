@@ -1,4 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {LocalStorageService} from 'angular-2-local-storage';
+import {UserService} from '../services/user-service';
+import {PropertyService} from '../services/property-service';
+import {Globals} from '../app-properties';
 
 @Component({
   selector: 'app-property-view',
@@ -7,9 +12,34 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PropertyViewComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private localStorageService: LocalStorageService,
+    private userService: UserService,
+    private propertyService: PropertyService,
+    private globals: Globals) {
+  }
+
+  propertyId: string
+  userToken: string;
+  userName: string;
 
   ngOnInit() {
+    this.propertyId = this.route.snapshot.paramMap.get('property');
+    this.userToken = this.localStorageService.get("token");
+    this.userName = this.localStorageService.get("user");
+    console.log(this.propertyId)
+
+    /*TODO
+    Add header to property view and list pages (includes logout button) [Bidding Platform---------------------------------------------Logout]
+    Add method to get this properties data
+    Add method to get this properties bids
+      This can be messed around with filter-wise (my bids then a list of the rest of the bids including mine)
+    Add create bid method
+    Add websocket to get current bids from other users and add to page
+    Add countdown on bids somewhere on the page
+    */
   }
 
 }
