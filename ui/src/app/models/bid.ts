@@ -1,8 +1,13 @@
 export class Bid{
-    id:string;
     userId:string;
     propertyId:string;
     value:number;
     createdDate:Date;
-    bidStatus:string;
+}
+
+export interface BidInterface {
+  userId:string;
+  propertyId:string;
+  value:number;
+  createdDate:Date;
 }

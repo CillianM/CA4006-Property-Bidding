@@ -27,21 +27,27 @@
 
 <div style="padding:0 16px;">
   <ul class="table-title">
-    <li><h2>{{property.name}}</h2></li>
+    <li><h2>Profile Page</h2></li>
+  </ul>
+</div>
+
+<div style="padding:0 16px;">
+
+  <ul class="table-title">
+    <li><h2>Current Bids</h2></li>
   </ul>
   <table class="table">
     <thead class="thead-dark">
     <tr>
-      <th class="col">Type</th>
-      <th class="col">Area Code</th>
-      <th class="col">Current Price</th>
+      <th class="col">Property Id</th>
+      <th class="col">Value</th>
     </tr>
     </thead>
     <tbody>
-    <tr>
-      <td class="column">{{property.propertyType}}</td>
-      <td class="column">{{property.areaCode}}</td>
-      <td class="column">{{property.price}}</td>
+    <tr *ngFor="let bid of bidList">
+      <th scope="row" class="column"><a routerLink="/property/{{bid.propertyId}}" routerLinkActive="active">{{bid.propertyId}}</a>
+      </th>
+      <td class="column">{{bid.value}}</td>
     </tr>
     </tbody>
   </table>
@@ -49,56 +55,27 @@
 </div>
 
 <div style="padding:0 16px;">
+
   <ul class="table-title">
-    <li><h2>Current Bids</h2></li>
-    <li class="right">
-      <button class="create-button right" (click)="show()">Create Bid</button>
-    </li>
+    <li><h2>Current Bookings</h2></li>
   </ul>
   <table class="table">
     <thead class="thead-dark">
     <tr>
-      <th class="col">Name</th>
-      <th class="col">Bid Price</th>
-      <th class="col">Date</th>
+      <th class="col">ID</th>
+      <th class="col">User Id</th>
+      <th class="col">Property Id</th>
+      <th class="col">Booking Time</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let bid of bidList">
+      <th scope="row" class="column">{{bid.id}}</th>
       <td class="column">{{bid.userId}}</td>
-      <td class="column">{{bid.value}}</td>
-      <td class="column">{{bid.createdDate | date:"dd/MM/yyyy 'at' h:mm:ssa"}}</td>
+      <td class="column"><a routerLink="/property/{{property.id}}" routerLinkActive="active">{{bid.propertyId}}</a></td>
+      <td class="column">{{bid.bookingTime}}</td>
     </tr>
     </tbody>
   </table>
 
-</div>
-
-
-
-<div (click)="onContainerClicked($event)" class="modal fade" tabindex="-1" [ngClass]="{'show': visibleAnimate}"
-     [ngStyle]="{'display': visible ? 'block' : 'none', 'opacity': visibleAnimate ? 1 : 0}">
-  <div>
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Create Bid</h2>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="bidForm" novalidate (ngSubmit)="save(bidForm.value, bidForm.valid)">
-          <div class="form-group">
-            <label for="">Bid Value</label>
-            <input type="number" min="0.01" step="0.01" class="form-control" formControlName="value">
-          </div>
-          <div class="button-container">
-            <button type="submit" class="create-button">
-              <span>Submit</span>
-            </button>
-          </div>
-        </form>
-
-      </div>
-      <div class="modal-footer">
-      </div>
-    </div>
-  </div>
 </div>

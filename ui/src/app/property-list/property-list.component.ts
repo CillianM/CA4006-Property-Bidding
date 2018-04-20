@@ -64,7 +64,7 @@ export class PropertyListComponent implements OnInit {
     err => console.log(err);
   }
 
-  subcribeToFormChanges() {
+  subscribeToFormChanges() {
     const myFormStatusChanges$ = this.propertyForm.statusChanges;
     const myFormValueChanges$ = this.propertyForm.valueChanges;
 
@@ -97,11 +97,22 @@ export class PropertyListComponent implements OnInit {
     }
   }
 
+  logoutUser() {
+    this.userService.logoutUser(this.userName, this.userToken)
+      .subscribe(
+        returnedToken => {
+          console.log(returnedToken)
+          this.localStorageService.clearAll();
+          window.location.href = "/ui/property"
+        });
+    err => console.log(err);
+  }
+
   ngOnInit() {
     this.userToken = this.localStorageService.get("token");
     this.userName = this.localStorageService.get("user");
     console.log(this.userName + " " + this.userToken);
-    let currentDate = new Date().toISOString().split('T')[0]
+    let currentDate = new Date().toISOString().split('T')[0];
     let currentTime = new Date().getHours() + ":" + new Date().getMinutes();
 
     this.propertyForm = this.formBuilder.group({
@@ -113,7 +124,7 @@ export class PropertyListComponent implements OnInit {
       biddingExpiry: [currentDate + "T" + currentTime, [<any>Validators.required]],
 
     });
-    this.subcribeToFormChanges();
+    this.subscribeToFormChanges();
     this.getProperties();
 
   }

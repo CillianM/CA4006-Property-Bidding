@@ -45,12 +45,12 @@ public class UserController {
     @DELETE
     @Path("/logout/{username}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createUser(@Context HttpServletRequest request,@PathParam("username") String username) {
+    public Response logoutUser(@Context HttpServletRequest request, @PathParam("username") String username) throws Exception {
         if(!AuthProvider.isValidUser(request)){
             return Response.status(401).build();
         }
         StorageService.deleteUserToken(username);
-        return Response.status(200).build();
+        return Response.status(200).entity(new ObjectMapper().writeValueAsString(username)).build();
     }
 
     @POST

@@ -1,51 +1,53 @@
 import {Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions, Response} from '@angular/http';
 import {Observable} from 'rxjs/Rx';
-import {Bid} from '../models/bid';
+import {Booking} from '../models/booking';
 import {Globals} from '../app-properties';
 
 @Injectable()
-export class BidService{
-    constructor (private http: Http, private globals: Globals) {}
-    ENDPOINT = this.globals.endpoint + "/bid";
+export class BookingService {
+  constructor(private http: Http, private globals: Globals) {
+  }
 
-  getUserBids(username: string, token: string): Observable<Bid[]> {
+  ENDPOINT = this.globals.endpoint + "/booking";
+
+  getUserBookings(username: string, token: string): Observable<Booking[]> {
     let headers = new Headers();
     let auth = btoa(username + ":" + token);
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', 'Basic ' + auth)
     let options = new RequestOptions({headers: headers});
     return this.http.get(this.ENDPOINT + "/user/" + username, options)
-                                 .map((res:Response) => res.json())
-                                 .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
 
-    }
+  }
 
-  getPropertyBids(propertyId: string, username: string, token: string): Observable<Bid[]> {
+  getPropertyBookings(propertyId: string, username: string, token: string): Observable<Booking[]> {
     let headers = new Headers();
     let auth = btoa(username + ":" + token);
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', 'Basic ' + auth)
     let options = new RequestOptions({headers: headers});
     return this.http.get(this.ENDPOINT + "/" + propertyId, options)
-                        .map((res:Response) => res.json())
-                        .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
 
-    }
+  }
 
-  getPropertyUserBid(propertyId: string, username: string, token: string): Observable<Bid> {
+  getPropertyUserBookings(propertyId: string, username: string, token: string): Observable<Booking[]> {
     let headers = new Headers();
     let auth = btoa(username + ":" + token);
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', 'Basic ' + auth)
     let options = new RequestOptions({headers: headers});
     return this.http.get(this.ENDPOINT + "/" + propertyId + "/" + username, options)
-                        .map((res:Response) => res.json())
-                        .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
 
-    }
+  }
 
-  createBid(body: Object, username: string, token: string): Observable<Bid> {
+  createBooking(body: Object, username: string, token: string): Observable<Booking> {
     let bodyString = JSON.stringify(body);
     let headers = new Headers();
     let auth = btoa(username + ":" + token);
@@ -58,7 +60,7 @@ export class BidService{
       .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
   }
 
-  deleteBid(propertyId: string, username: string, token: string): Observable<Bid[]> {
+  deleteBooking(propertyId: string, username: string, token: string): Observable<Booking[]> {
     let headers = new Headers();
     let auth = btoa(username + ":" + token);
     headers.append('Content-Type', 'application/json');
