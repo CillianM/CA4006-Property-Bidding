@@ -1,5 +1,4 @@
 export class Bid{
-    id:string;
     userId:string;
     propertyId:string;
     value:number;

@@ -9,13 +9,13 @@ export class BidService{
     constructor (private http: Http, private globals: Globals) {}
     ENDPOINT = this.globals.endpoint + "/bid";
 
-  getUserBids(userId: string, username: string, token: string): Observable<Bid[]> {
+  getUserBids(username: string, token: string): Observable<Bid[]> {
     let headers = new Headers();
     let auth = btoa(username + ":" + token);
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', 'Basic ' + auth)
     let options = new RequestOptions({headers: headers});
-                 return this.http.get(this.ENDPOINT + "/user/" + userId)
+    return this.http.get(this.ENDPOINT + "/user/" + username)
                                  .map((res:Response) => res.json())
                                  .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
 
@@ -33,13 +33,13 @@ export class BidService{
 
     }
 
-  getPropertyUserBids(userId: string, propertyId: string, username: string, token: string): Observable<Bid[]> {
+  getPropertyUserBid(propertyId: string, username: string, token: string): Observable<Bid> {
     let headers = new Headers();
     let auth = btoa(username + ":" + token);
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', 'Basic ' + auth)
     let options = new RequestOptions({headers: headers});
-        return this.http.get(this.ENDPOINT + "/" + propertyId + "/" + userId)
+    return this.http.get(this.ENDPOINT + "/" + propertyId + "/" + username)
                         .map((res:Response) => res.json())
                         .catch((error:any) => Observable.throw(error.json().error || 'Server error'));
 
@@ -54,6 +54,18 @@ export class BidService{
     let options = new RequestOptions({headers: headers});
 
     return this.http.post(this.ENDPOINT, body, options)
+      .map((res: Response) => res.json())
+      .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+  }
+
+  deleteBid(propertyId: string, username: string, token: string): Observable<Bid[]> {
+    let headers = new Headers();
+    let auth = btoa(username + ":" + token);
+    headers.append('Content-Type', 'application/json');
+    headers.append('Authorization', 'Basic ' + auth)
+    let options = new RequestOptions({headers: headers});
+
+    return this.http.delete(this.ENDPOINT + "/" + propertyId + "/" + username, options)
       .map((res: Response) => res.json())
       .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
   }
