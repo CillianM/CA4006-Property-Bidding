@@ -16,6 +16,8 @@ import {PropertyService} from './services/property-service';
 import {BidService} from './services/bid-service';
 import {PropertyListComponent} from './property-list/property-list.component';
 import {PropertyViewComponent} from './property-view/property-view.component';
+import {ProfileComponent} from './profile/profile.component';
+import {BookingService} from './services/booking-service';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,8 @@ import {PropertyViewComponent} from './property-view/property-view.component';
     LoginComponent,
     PagenotfoundComponent,
     PropertyListComponent,
-    PropertyViewComponent
+    PropertyViewComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -42,6 +45,7 @@ import {PropertyViewComponent} from './property-view/property-view.component';
     PropertyService,
     BidService,
     UserService,
+    BookingService,
     Globals
   ],
   bootstrap: [

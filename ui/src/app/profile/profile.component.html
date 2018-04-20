@@ -1,0 +1,81 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">Bidding Platform</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav">
+      <li class="nav-item" [hidden]="userName != null">
+        <a class="nav-link" href="/login">Login</a>
+      </li>
+      <li class="nav-item dropdown" [hidden]="userName == null">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          {{userName}}
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="/profile">Profile</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)="logoutUser()">Logout</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div style="padding:0 16px;">
+  <ul class="table-title">
+    <li><h2>Profile Page</h2></li>
+  </ul>
+</div>
+
+<div style="padding:0 16px;">
+
+  <ul class="table-title">
+    <li><h2>Current Bids</h2></li>
+  </ul>
+  <table class="table">
+    <thead class="thead-dark">
+    <tr>
+      <th class="col">Property Id</th>
+      <th class="col">Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let bid of bidList">
+      <th scope="row" class="column"><a routerLink="/property/{{bid.propertyId}}" routerLinkActive="active">{{bid.propertyId}}</a>
+      </th>
+      <td class="column">{{bid.value}}</td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
+
+<div style="padding:0 16px;">
+
+  <ul class="table-title">
+    <li><h2>Current Bookings</h2></li>
+  </ul>
+  <table class="table">
+    <thead class="thead-dark">
+    <tr>
+      <th class="col">ID</th>
+      <th class="col">User Id</th>
+      <th class="col">Property Id</th>
+      <th class="col">Booking Time</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let bid of bidList">
+      <th scope="row" class="column">{{bid.id}}</th>
+      <td class="column">{{bid.userId}}</td>
+      <td class="column"><a routerLink="/property/{{property.id}}" routerLinkActive="active">{{bid.propertyId}}</a></td>
+      <td class="column">{{bid.bookingTime}}</td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>

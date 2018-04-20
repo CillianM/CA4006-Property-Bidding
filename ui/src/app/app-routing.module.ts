@@ -4,10 +4,12 @@ import {LoginComponent} from './login/login.component';
 import {PagenotfoundComponent} from './pagenotfound/pagenotfound.component';
 import {PropertyListComponent} from './property-list/property-list.component';
 import {PropertyViewComponent} from './property-view/property-view.component';
+import {ProfileComponent} from './profile/profile.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'property', component: PropertyListComponent },
+  {path: 'profile', component: ProfileComponent},
   {
     path: 'property/:property',
     component: PropertyViewComponent
