@@ -4,3 +4,10 @@ export class Bid{
     value:number;
     createdDate:Date;
 }
+
+export interface BidInterface {
+  userId:string;
+  propertyId:string;
+  value:number;
+  createdDate:Date;
+}

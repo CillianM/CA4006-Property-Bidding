@@ -101,8 +101,9 @@ public class StorageService {
         return bidList.put(propertyId, propertyBids);
     }
 
-    public static LinkedHashMap<String, Bid> getPropertyBids(String propertyId) {
-        return bidList.get(propertyId);
+    public static  List<Bid> getPropertyBids(String propertyId) {
+        LinkedHashMap<String,Bid> propertyBidList = bidList.getOrDefault(propertyId, new LinkedHashMap<>());
+        return new ArrayList<>(propertyBidList.values());
     }
 
     public static Bid getUserPropertyBid(String propertyId, String userId) {
@@ -148,8 +149,9 @@ public class StorageService {
         return userBookies;
     }
 
-    public static LinkedHashMap<String, Booking> getPropertyBookings(String propertyId) {
-        return bookingList.get(propertyId);
+    public static List<Booking> getPropertyBookings(String propertyId) {
+        LinkedHashMap<String,Booking> propertyBookings = bookingList.getOrDefault(propertyId, new LinkedHashMap<>());
+        return new ArrayList<>(propertyBookings.values());
     }
 
     public static List<Booking> getUserPropertyBookings(String propertyId, String username) {

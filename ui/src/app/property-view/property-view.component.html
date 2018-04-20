@@ -24,3 +24,81 @@
     </ul>
   </div>
 </nav>
+
+<div style="padding:0 16px;">
+  <ul class="table-title">
+    <li><h2>{{property.name}}</h2></li>
+  </ul>
+  <table class="table">
+    <thead class="thead-dark">
+    <tr>
+      <th class="col">Type</th>
+      <th class="col">Area Code</th>
+      <th class="col">Current Price</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td class="column">{{property.propertyType}}</td>
+      <td class="column">{{property.areaCode}}</td>
+      <td class="column">{{property.price}}</td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
+
+<div style="padding:0 16px;">
+  <ul class="table-title">
+    <li><h2>Current Bids</h2></li>
+    <li class="right">
+      <button class="create-button right" (click)="show()">Create Bid</button>
+    </li>
+  </ul>
+  <table class="table">
+    <thead class="thead-dark">
+    <tr>
+      <th class="col">Name</th>
+      <th class="col">Bid Price</th>
+      <th class="col">Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let bid of bidList">
+      <td class="column">{{bid.userId}}</td>
+      <td class="column">{{bid.value}}</td>
+      <td class="column">{{bid.createdDate | date:"dd/MM/yyyy 'at' h:mm:ssa"}}</td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
+
+
+
+<div (click)="onContainerClicked($event)" class="modal fade" tabindex="-1" [ngClass]="{'show': visibleAnimate}"
+     [ngStyle]="{'display': visible ? 'block' : 'none', 'opacity': visibleAnimate ? 1 : 0}">
+  <div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Create Bid</h2>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="bidForm" novalidate (ngSubmit)="save(bidForm.value, bidForm.valid)">
+          <div class="form-group">
+            <label for="">Bid Value</label>
+            <input type="number" min="0.01" step="0.01" class="form-control" formControlName="value">
+          </div>
+          <div class="button-container">
+            <button type="submit" class="create-button">
+              <span>Submit</span>
+            </button>
+          </div>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
