@@ -3,5 +3,4 @@ export class Bid{
     propertyId:string;
     value:number;
     createdDate:Date;
-    bidStatus:string;
 }

@@ -25,6 +25,17 @@ export class PropertyViewComponent implements OnInit {
   userToken: string;
   userName: string;
 
+  logoutUser() {
+    this.userService.logoutUser(this.userName, this.userToken)
+      .subscribe(
+        returnedToken => {
+          console.log(returnedToken)
+          this.localStorageService.clearAll();
+          window.location.href = "/ui/property"
+        });
+    err => console.log(err);
+  }
+
   ngOnInit() {
     this.propertyId = this.route.snapshot.paramMap.get('property');
     this.userToken = this.localStorageService.get("token");

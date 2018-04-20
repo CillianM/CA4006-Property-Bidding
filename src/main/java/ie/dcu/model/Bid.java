@@ -7,7 +7,6 @@ public class Bid {
     private String propertyId;
     private double value;
     private Date createdDate;
-    private String bidStatus;
 
     public Bid() {
     }
@@ -26,14 +25,6 @@ public class Bid {
 
     public void setValue(double value) {
         this.value = value;
-    }
-
-    public String getBidStatus() {
-        return bidStatus;
-    }
-
-    public void setBidStatus(String bidStatus) {
-        this.bidStatus = bidStatus;
     }
 
     public String getPropertyId() {

@@ -97,6 +97,17 @@ export class PropertyListComponent implements OnInit {
     }
   }
 
+  logoutUser() {
+    this.userService.logoutUser(this.userName, this.userToken)
+      .subscribe(
+        returnedToken => {
+          console.log(returnedToken)
+          this.localStorageService.clearAll();
+          window.location.href = "/ui/property"
+        });
+    err => console.log(err);
+  }
+
   ngOnInit() {
     this.userToken = this.localStorageService.get("token");
     this.userName = this.localStorageService.get("user");
