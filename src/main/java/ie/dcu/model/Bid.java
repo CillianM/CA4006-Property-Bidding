@@ -3,7 +3,6 @@ package ie.dcu.model;
 import java.util.Date;
 
 public class Bid {
-    private String id;
     private String userId;
     private String propertyId;
     private double value;
@@ -11,14 +10,6 @@ public class Bid {
     private String bidStatus;
 
     public Bid() {
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getUserId() {

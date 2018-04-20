@@ -1,6 +1,7 @@
 package ie.dcu.service;
 
 import ie.dcu.model.Bid;
+import ie.dcu.model.Booking;
 import ie.dcu.model.Property;
 import ie.dcu.model.User;
 
@@ -11,6 +12,8 @@ public class StorageService {
     private static HashMap<String, String> tokenList = new HashMap<>();
     private static HashMap<String, User> userList = new HashMap<>();
     private static HashMap<String, LinkedHashMap<String, Bid>> bidList = new HashMap<>();
+    private static HashMap<String, LinkedHashMap<String, Booking>> bookingList = new HashMap<>();
+
 
     private static String getNewId() {
         return UUID.randomUUID().toString();
@@ -86,17 +89,15 @@ public class StorageService {
     }
 
     public static LinkedHashMap<String, Bid> addBid(String propertyId, Bid bid) {
-        String uuid = getNewId();
-        bid.setId(uuid);
         LinkedHashMap<String, Bid> propertyBids = bidList.getOrDefault(propertyId, new LinkedHashMap<>());
-        propertyBids.put(uuid, bid);
+        propertyBids.put(bid.getUserId(), bid);
         bidList.put(propertyId, propertyBids);
         return propertyBids;
     }
 
-    public static LinkedHashMap<String, Bid> removeBid(String propertyId, Bid bid) {
+    public static LinkedHashMap<String, Bid> removeBid(String propertyId, String bidId) {
         LinkedHashMap<String, Bid> propertyBids = bidList.getOrDefault(propertyId, new LinkedHashMap<>());
-        propertyBids.remove(bid.getPropertyId());
+        propertyBids.remove(bidId);
         return bidList.put(propertyId, propertyBids);
     }
 
@@ -104,24 +105,59 @@ public class StorageService {
         return bidList.get(propertyId);
     }
 
-    public static List<Bid> getUserPropertyBids(String propertyId, String userId) {
+    public static Bid getUserPropertyBid(String propertyId, String userId) {
         LinkedHashMap<String, Bid>  propertyBids = bidList.get(propertyId);
+        return propertyBids.get(userId);
+    }
+
+    public static List<Bid> getUserBids(String userId) {
         List<Bid> userBids = new ArrayList<>();
-        for(Bid bid: propertyBids.values()){
-            if(bid.getUserId().equals(userId)){
-                userBids.add(bid);
+        for (LinkedHashMap<String, Bid> propertyBids : bidList.values()) {
+            Bid userBid = propertyBids.get(userId);
+            if (userBid != null) {
+                userBids.add(userBid);
             }
         }
         return userBids;
     }
 
-    public static List<Bid> getUserBids(String userId) {
-        List<Bid> userBids = new ArrayList<>();
-        for(LinkedHashMap<String, Bid>  propertyBids: bidList.values()){
-            for(Bid bid: propertyBids.values()){
+    public static LinkedHashMap<String, Booking> addBooking(String propertyId, Booking booking) {
+        String uuid = getNewId();
+        booking.setId(uuid);
+        LinkedHashMap<String, Booking> propertyBoookings = bookingList.getOrDefault(propertyId, new LinkedHashMap<>());
+        propertyBoookings.put(uuid, booking);
+        bookingList.put(propertyId, propertyBoookings);
+        return propertyBoookings;
+    }
+
+    public static LinkedHashMap<String, Booking> removeBooking(String propertyId, String bidId) {
+        LinkedHashMap<String, Booking> propertyBoookings = bookingList.getOrDefault(propertyId, new LinkedHashMap<>());
+        propertyBoookings.remove(bidId);
+        return bookingList.put(propertyId, propertyBoookings);
+    }
+
+    public static List<Booking> getUserBookings(String userId) {
+        List<Booking> userBookies = new ArrayList<>();
+        for (LinkedHashMap<String, Booking> propertyBoookings : bookingList.values()) {
+            for (Booking bid : propertyBoookings.values()) {
                 if(bid.getUserId().equals(userId)){
-                    userBids.add(bid);
+                    userBookies.add(bid);
                 }
+            }
+        }
+        return userBookies;
+    }
+
+    public static LinkedHashMap<String, Booking> getPropertyBookings(String propertyId) {
+        return bookingList.get(propertyId);
+    }
+
+    public static List<Booking> getUserPropertyBookings(String propertyId, String username) {
+        LinkedHashMap<String, Booking> propertyBoookings = bookingList.get(propertyId);
+        List<Booking> userBids = new ArrayList<>();
+        for (Booking booking : propertyBoookings.values()) {
+            if (booking.getUserId().equals(username)) {
+                userBids.add(booking);
             }
         }
         return userBids;

@@ -83,11 +83,11 @@ public class BiddingController {
 
     @GET
     @Path("/{id}/{username}")
-    public Response getUserPropertyBids(@Context HttpServletRequest request, @PathParam("id") String propertyId, @PathParam("id") String username) throws Exception {
+    public Response getUserPropertyBid(@Context HttpServletRequest request, @PathParam("id") String propertyId, @PathParam("id") String username) throws Exception {
         if(!AuthProvider.isValidUser(request)){
             return Response.status(401).build();
         }
-        return Response.status(200).entity(new ObjectMapper().writeValueAsString(StorageService.getUserPropertyBids(propertyId, username))).build();
+        return Response.status(200).entity(new ObjectMapper().writeValueAsString(StorageService.getUserPropertyBid(propertyId, username))).build();
     }
 
     @GET
@@ -97,5 +97,14 @@ public class BiddingController {
             return Response.status(401).build();
         }
         return Response.status(200).entity(new ObjectMapper().writeValueAsString(StorageService.getUserBids(username))).build();
+    }
+
+    @DELETE
+    @Path("/{id}/{username}")
+    public Response deleteBid(@Context HttpServletRequest request, @PathParam("id") String propertyId, @PathParam("username") String username) throws Exception {
+        if (!AuthProvider.isValidUser(request)) {
+            return Response.status(401).build();
+        }
+        return Response.status(200).entity(new ObjectMapper().writeValueAsString(StorageService.removeBid(propertyId, username))).build();
     }
 }
