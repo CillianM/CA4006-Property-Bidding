@@ -187,6 +187,9 @@ export class PropertyViewComponent implements OnInit {
       if (difference <= 0) {
         clearInterval(globalScope.timer);
         globalScope.seconds = 0;
+        globalScope.days = 0;
+        globalScope.hours = 0;
+        globalScope.minutes = 0;
       } else {
 
         globalScope.seconds = Math.floor(difference / 1000);
@@ -244,6 +247,8 @@ export class PropertyViewComponent implements OnInit {
     this.ready = false;
     this.propertyId = this.route.snapshot.paramMap.get('property');
     this.userToken = this.localStorageService.get("token");
+    if (this.userToken == null)
+      window.location.href = "/ui/property"
     this.userName = this.localStorageService.get("user");
     console.log(this.propertyId);
     this.property= new Property();
