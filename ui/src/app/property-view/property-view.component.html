@@ -47,7 +47,7 @@
         <div class="card mt-4">
           <div class="card-body" [hidden]="!ready">
             <h3 class="card-title">Bidding Information</h3>
-            <div [hidden]="bidList.length == 0">
+            <div [hidden]="bidList?.length == 0">
               <p [hidden]="seconds==0" [style.color]="highestBid?.userId != userName ? 'red' : 'green'">Current Highest
                 Bid: {{highestBid?.value}} ({{highestBid?.userId}})</p>
               <p [hidden]="seconds!=0" [style.color]="highestBid?.userId != userName ? 'red' : 'green'">Highest Bidder:
@@ -84,13 +84,17 @@
               <th class="col">Name</th>
               <th class="col">Bid Price</th>
               <th class="col">Date</th>
+              <th class="col"></th>
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let bid of bidList">
+            <tr *ngFor="let bid of bidList; let i = index">
               <td class="column">{{bid.userId}}</td>
               <td class="column">{{bid.value}}</td>
               <td class="column">{{bid.createdDate | date:"dd/MM/yyyy 'at' h:mm:ssa"}}</td>
+              <td class="column" [hidden]="bid.userId != userName">
+                <button type="button" class="btn btn-danger btn-sm" (click)="deleteBid(i)">Delete Bid</button>
+              </td>
             </tr>
             </tbody>
           </table>

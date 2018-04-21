@@ -103,11 +103,25 @@ export class PropertyViewComponent implements OnInit {
     myFormValueChanges$.subscribe(x => this.events.push({event: 'VALUE_CHANGED', object: x}));
   }
 
+  deleteBid(index: number) {
+    console.log(index)
+    if (this.bidList[index].userId == this.userName) {
+      this.bidService.deleteBid(this.propertyId, this.userName, this.userToken)
+        .subscribe(
+          returnedBid => {
+            console.log(returnedBid);
+          });
+      err => console.log(err);
+    }
+  }
+
   save(model: BidInterface, isValid: boolean) {
     console.log(model, isValid);
-    let bidBoolean = this.bidList.length == 0 && model.value > this.property.price;
-    if (!bidBoolean)
+    let bidBoolean = this.bidList.length == 0 && model.value >= this.property.price;
+    if (!bidBoolean) {
+      console.log("Not first bid")
       bidBoolean = model.value > this.highestBid.value
+    }
     if (isValid && bidBoolean) {
       this.error = false;
       let newBid = new Bid();
@@ -121,7 +135,6 @@ export class PropertyViewComponent implements OnInit {
           returnedBid => {
             this.createdBid = returnedBid;
             console.log(returnedBid);
-            this.bidList.push(returnedBid);
             this.hide();
           });
       err => console.log(err);

@@ -105,6 +105,16 @@ public class BiddingController {
         if (!AuthProvider.isValidUser(request)) {
             return Response.status(401).build();
         }
-        return Response.status(200).entity(new ObjectMapper().writeValueAsString(StorageService.removeBid(propertyId, username))).build();
+        LinkedHashMap<String, Bid> propertyBids = StorageService.removeBid(propertyId, username);
+        List<Bid> bidList = new ArrayList<>(propertyBids.values());
+        ObjectMapper mapper = new ObjectMapper();
+        String bidJson = null;
+        try {
+            bidJson = mapper.writeValueAsString(bidList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        sendMessageOverSocket(propertyId, bidJson);
+        return Response.status(201).entity(bidJson).build();
     }
 }
