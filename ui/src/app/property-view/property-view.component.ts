@@ -38,6 +38,7 @@ export class PropertyViewComponent implements OnInit {
   public events: any[] = [];
   public submitted: boolean;
   public error: boolean;
+  public ready: boolean;
   highestBid: Bid;
 
   days: number;
@@ -104,7 +105,7 @@ export class PropertyViewComponent implements OnInit {
 
   save(model: BidInterface, isValid: boolean) {
     console.log(model, isValid);
-    let bidBoolean = this.bidList.length == 0 && model.value >= this.property.price;
+    let bidBoolean = this.bidList.length == 0 && model.value > this.property.price;
     if (!bidBoolean)
       bidBoolean = model.value > this.highestBid.value
     if (isValid && bidBoolean) {
@@ -172,6 +173,7 @@ export class PropertyViewComponent implements OnInit {
 
       if (difference <= 0) {
         clearInterval(globalScope.timer);
+        globalScope.seconds = 0;
       } else {
 
         globalScope.seconds = Math.floor(difference / 1000);
@@ -183,6 +185,7 @@ export class PropertyViewComponent implements OnInit {
         globalScope.minutes %= 60;
         globalScope.seconds %= 60;
       }
+      globalScope.ready = true;
     }
   }
 
@@ -221,6 +224,7 @@ export class PropertyViewComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.ready = false;
     this.propertyId = this.route.snapshot.paramMap.get('property');
     this.userToken = this.localStorageService.get("token");
     this.userName = this.localStorageService.get("user");

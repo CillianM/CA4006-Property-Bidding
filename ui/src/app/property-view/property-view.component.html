@@ -35,21 +35,35 @@
       <img class="card-img-top img-fluid" src="/assets/house.jpeg" alt="">
     </div>
     <div class="col-lg-9">
-      <div class="card mt-4">
-
-        <div class="card-body">
-          <h3 class="card-title">{{property.name}}</h3>
-          <h4>€{{property.price}}</h4>
-          <p class="card-text">Type: {{property.propertyType}}<br>Area Code: {{property.areaCode}}</p>
-          <p>{{highestBid?.userId}} is the highest bidder!</p>
-          <div class="timer">
-            <span class="days"></span>{{days}} days
-            <span class="hours"></span>{{hours}} hours
-            <span class="minutes"></span>{{minutes}} minutes
-            <span class="seconds"></span>{{seconds}} seconds remaining
+      <div class="card-group">
+        <div class="card mt-4">
+          <div class="card-body">
+            <h3 class="card-title">{{property.name}}</h3>
+            <h4>€{{property.price}}</h4>
+            <p class="card-text">Type: {{property.propertyType}}<br>Area Code: {{property.areaCode}}<br>Bedrooms:
+              {{property.bedroomCount}}</p>
+          </div>
+        </div>
+        <div class="card mt-4">
+          <div class="card-body" [hidden]="!ready">
+            <h3 class="card-title">Bidding Information</h3>
+            <div [hidden]="bidList.length == 0">
+              <p [hidden]="seconds==0" [style.color]="highestBid?.userId != userName ? 'red' : 'green'">Current Highest
+                Bid: {{highestBid?.value}} ({{highestBid?.userId}})</p>
+              <p [hidden]="seconds!=0" [style.color]="highestBid?.userId != userName ? 'red' : 'green'">Highest Bidder:
+                {{highestBid?.userId}}</p>
+            </div>
+            <div class="timer">
+              <span class="days" [hidden]="days==0">{{days}} days</span>
+              <span class="hours" [hidden]="hours==0">{{hours}} hours</span>
+              <span class="minutes" [hidden]="minutes==0">{{minutes}} minutes</span>
+              <span class="seconds" [hidden]="seconds==0">{{seconds}} seconds remaining</span>
+              <span class="seconds" [hidden]="seconds!=0">Bidding Over!</span>
+            </div>
           </div>
         </div>
       </div>
+
     </div>
   </div>
   <div class="row">
@@ -59,7 +73,9 @@
           <ul class="table-title">
             <li><h2>Current Bids</h2></li>
             <li class="right">
-              <button type="button" class="btn btn-primary btn-block" (click)="show()">Create Bid</button>
+              <button type="button" class="btn btn-primary btn-block" (click)="show()" [hidden]="seconds==0">Create
+                Bid
+              </button>
             </li>
           </ul>
           <table class="table">

@@ -15,13 +15,3 @@
   color: #999;
   letter-spacing: -1px;
 }
-
-.timer span {
-  font-size: 60px;
-  color: #333;
-  margin: 0 3px 0 15px;
-}
-
-.timer span:first-child {
-  margin-left: 0;
-}
