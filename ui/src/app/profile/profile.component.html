@@ -53,29 +53,3 @@
   </table>
 
 </div>
-
-<div style="padding:0 16px;">
-
-  <ul class="table-title">
-    <li><h2>Current Bookings</h2></li>
-  </ul>
-  <table class="table">
-    <thead class="thead-dark">
-    <tr>
-      <th class="col">ID</th>
-      <th class="col">User Id</th>
-      <th class="col">Property Id</th>
-      <th class="col">Booking Time</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let bid of bidList">
-      <th scope="row" class="column">{{bid.id}}</th>
-      <td class="column">{{bid.userId}}</td>
-      <td class="column"><a routerLink="/property/{{property.id}}" routerLinkActive="active">{{bid.propertyId}}</a></td>
-      <td class="column">{{bid.bookingTime}}</td>
-    </tr>
-    </tbody>
-  </table>
-
-</div>

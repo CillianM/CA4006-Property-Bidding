@@ -95,7 +95,7 @@
               <td class="column">{{bid.value}}</td>
               <td class="column">{{bid.createdDate | date:"dd/MM/yyyy 'at' h:mm:ssa"}}</td>
               <td class="column" [hidden]="bid.userId != userName">
-                <button [hidden]="!ready && seconds==0" type="button" class="btn btn-danger btn-sm"
+                <button [hidden]="!ready || seconds==0" type="button" class="btn btn-danger btn-sm"
                         (click)="deleteBid(i)">Delete
                   Bid
                 </button>
