@@ -1,6 +1,7 @@
 package ie.dcu.controller;
 
 import ie.dcu.model.Bid;
+import ie.dcu.model.Property;
 import ie.dcu.security.AuthProvider;
 import ie.dcu.service.StorageService;
 import ie.dcu.socket.BiddingClientSocket;
@@ -14,10 +15,7 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 @Path("/bid")
 public class BiddingController {
@@ -58,18 +56,24 @@ public class BiddingController {
         if (!AuthProvider.isValidUser(request)) {
             return Response.status(401).build();
         }
-        System.out.println("received event:" + bid);
-        LinkedHashMap<String, Bid> propertyBids = StorageService.addBid(bid.getPropertyId(), bid);
-        List<Bid> bidList = new ArrayList<>(propertyBids.values());
-        ObjectMapper mapper = new ObjectMapper();
-        String bidJson = null;
-        try {
-            bidJson = mapper.writeValueAsString(bidList);
-        } catch (IOException e) {
-            e.printStackTrace();
+        Property property = StorageService.getProperty(bid.getPropertyId());
+        Date currentDate = new Date();
+        if (currentDate.before(property.getBiddingExpiry())) {
+            System.out.println("received event:" + bid);
+            LinkedHashMap<String, Bid> propertyBids = StorageService.addBid(bid.getPropertyId(), bid);
+            List<Bid> bidList = new ArrayList<>(propertyBids.values());
+            ObjectMapper mapper = new ObjectMapper();
+            String bidJson = null;
+            try {
+                bidJson = mapper.writeValueAsString(bidList);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            sendMessageOverSocket(bid.getPropertyId(), bidJson);
+            return Response.status(201).entity(bidJson).build();
+        } else {
+            return Response.status(400).build();
         }
-        sendMessageOverSocket(bid.getPropertyId(), bidJson);
-        return Response.status(201).entity(bidJson).build();
     }
 
     @GET
@@ -105,16 +109,22 @@ public class BiddingController {
         if (!AuthProvider.isValidUser(request)) {
             return Response.status(401).build();
         }
-        LinkedHashMap<String, Bid> propertyBids = StorageService.removeBid(propertyId, username);
-        List<Bid> bidList = new ArrayList<>(propertyBids.values());
-        ObjectMapper mapper = new ObjectMapper();
-        String bidJson = null;
-        try {
-            bidJson = mapper.writeValueAsString(bidList);
-        } catch (IOException e) {
-            e.printStackTrace();
+        Property property = StorageService.getProperty(propertyId);
+        Date currentDate = new Date();
+        if (currentDate.before(property.getBiddingExpiry())) {
+            LinkedHashMap<String, Bid> propertyBids = StorageService.removeBid(propertyId, username);
+            List<Bid> bidList = new ArrayList<>(propertyBids.values());
+            ObjectMapper mapper = new ObjectMapper();
+            String bidJson = null;
+            try {
+                bidJson = mapper.writeValueAsString(bidList);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            sendMessageOverSocket(propertyId, bidJson);
+            return Response.status(201).entity(bidJson).build();
+        } else {
+            return Response.status(400).build();
         }
-        sendMessageOverSocket(propertyId, bidJson);
-        return Response.status(201).entity(bidJson).build();
     }
 }

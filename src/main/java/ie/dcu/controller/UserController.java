@@ -57,9 +57,14 @@ public class UserController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createUser(User user) throws Exception {
-        user.setPassword(AuthProvider.hashString(user.getPassword()));
-        StorageService.createUser(user);
-        user.setPassword("");
-        return Response.status(201).entity(new ObjectMapper().writeValueAsString(user)).build();
+        User existingUser = StorageService.getUser(user.getName());
+        if (existingUser == null) {
+            user.setPassword(AuthProvider.hashString(user.getPassword()));
+            StorageService.createUser(user);
+            user.setPassword("");
+            return Response.status(201).entity(new ObjectMapper().writeValueAsString(user)).build();
+        } else {
+            return Response.status(400).build();
+        }
     }
 }
