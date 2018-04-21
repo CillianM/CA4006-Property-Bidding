@@ -225,7 +225,7 @@ export class PropertyViewComponent implements OnInit {
         var json = JSON.parse(message.data);
         console.log(json);
         var audio = new Audio();
-        audio.src = "../../../assets/notification.mp3";
+        audio.src = "/ui/assets/notification.mp3";
         audio.load();
         audio.play();
         let newList = [];

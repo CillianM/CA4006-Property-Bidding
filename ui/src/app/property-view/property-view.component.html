@@ -32,7 +32,7 @@
 <div style="padding:0 16px;">
   <div class="row">
     <div class="col-lg-3">
-      <img class="card-img-top img-fluid" src="/assets/house.jpeg" alt="">
+      <img class="card-img-top img-fluid" src="assets/house.jpeg" alt="">
     </div>
     <div class="col-lg-9">
       <div class="card-group">
@@ -93,7 +93,9 @@
               <td class="column">{{bid.value}}</td>
               <td class="column">{{bid.createdDate | date:"dd/MM/yyyy 'at' h:mm:ssa"}}</td>
               <td class="column" [hidden]="bid.userId != userName">
-                <button type="button" class="btn btn-danger btn-sm" (click)="deleteBid(i)">Delete Bid</button>
+                <button [hidden]="seconds==0" type="button" class="btn btn-danger btn-sm" (click)="deleteBid(i)">Delete
+                  Bid
+                </button>
               </td>
             </tr>
             </tbody>
