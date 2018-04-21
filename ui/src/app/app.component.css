@@ -38,18 +38,18 @@ ul.table-title {
     padding: 0;
     overflow: hidden;
   }
-  
+
   ul.table-title li {float: left;}
-  
+
   ul.table-title li.right {float: right;}
-  
+
   ul.table-title li button a {
     display: block;
     color: white;
     text-decoration: none;
   }
-  
-  
+
+
   .create-button {
     font-family: "Roboto", sans-serif;
     text-transform: uppercase;
@@ -68,9 +68,9 @@ ul.table-title {
   .create-button:hover,.create-button:active,.create-button:focus {
     background: #3b3d44;
   }
-  
+
   @media screen and (max-width: 600px){
-      ul.topnav li.right, 
+      ul.topnav li.right,
       ul.topnav li {float: none;}
   }
 
@@ -79,23 +79,23 @@ ul.table-title {
     font-size: 18px;
     color: #fff;
     line-height: 1.4;
-  
+
     background-color: #2f3136;
   }
-  
+
   .table100.ver1 td {
     font-family: Lato-Regular;
     font-size: 15px;
     color: #808080;
     line-height: 1.4;
   }
-  
+
   .table100.ver1 .table100-body tr:nth-child(even) {
     background-color: #f8f6ff;
   }
-  
+
   /*---------------------------------------------*/
-  
+
   .table100.ver1 {
     border-radius: 10px;
     overflow: hidden;
@@ -105,21 +105,21 @@ ul.table-title {
     -o-box-shadow: 0 0px 40px 0px rgba(0, 0, 0, 0.15);
     -ms-box-shadow: 0 0px 40px 0px rgba(0, 0, 0, 0.15);
   }
-  
+
   .table100.ver1 .ps__rail-y {
     right: 5px;
   }
-  
+
   .table100.ver1 .ps__rail-y::before {
     background-color: #ebebeb;
   }
-  
+
   .table100.ver1 .ps__rail-y .ps__thumb-y::before {
     background-color: #cccccc;
   }
-  
+
   .m-b-110 {margin-bottom: 110px;}
-  
+
   .table100-head {
     box-shadow: 0 5px 20px 0px rgba(0, 0, 0, 0.1);
     -moz-box-shadow: 0 5px 20px 0px rgba(0, 0, 0, 0.1);
@@ -127,12 +127,12 @@ ul.table-title {
     -o-box-shadow: 0 5px 20px 0px rgba(0, 0, 0, 0.1);
     -ms-box-shadow: 0 5px 20px 0px rgba(0, 0, 0, 0.1);
   }
-  
+
   table {
     border-collapse: collapse;
     width: 100%;
   }
-  
+
   .modal {
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
@@ -145,7 +145,7 @@ ul.table-title {
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
   }
-  
+
   .modal-dialog {
     border-radius: 10px;
     background: white;
@@ -158,3 +158,8 @@ ul.table-title {
     -o-box-shadow: 0 0px 40px 0px rgba(0, 0, 0, 0.15);
     -ms-box-shadow: 0 0px 40px 0px rgba(0, 0, 0, 0.15);
   }
+
+.modal-content {
+  width: 90%;
+  margin: 0 auto;
+}

@@ -37,12 +37,22 @@ export class PropertyViewComponent implements OnInit {
   createdBid: Bid;
   public events: any[] = [];
   public submitted: boolean;
+  public error: boolean;
+  highestBid: Bid;
+
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+  timer;
 
 
   visible = false;
   visibleAnimate = false;
 
   show(): void {
+    this.submitted = false;
+    this.error = false;
     if (this.userToken == null && this.userName == null) {
       window.location.href = '/ui/login';
     }
@@ -68,6 +78,7 @@ export class PropertyViewComponent implements OnInit {
           console.log(returnedProperty);
           this.property = returnedProperty,
             console.log(returnedProperty)
+          this.setTimer(returnedProperty.biddingExpiry);
         });
     err => console.log(err);
   }
@@ -76,8 +87,9 @@ export class PropertyViewComponent implements OnInit {
     this.bidService.getPropertyBids(this.propertyId, this.userName, this.userToken)
       .subscribe(
         returnedBidList => {
-          this.bidList = returnedBidList,
-            console.log(returnedBidList)
+          this.bidList = returnedBidList.sort(this.compare)
+          this.findHighestBidder();
+          console.log(returnedBidList)
         });
     err => console.log(err);
   }
@@ -92,13 +104,17 @@ export class PropertyViewComponent implements OnInit {
 
   save(model: BidInterface, isValid: boolean) {
     console.log(model, isValid);
-    if (isValid) {
+    let bidBoolean = this.bidList.length == 0 && model.value >= this.property.price;
+    if (!bidBoolean)
+      bidBoolean = model.value > this.highestBid.value
+    if (isValid && bidBoolean) {
+      this.error = false;
       let newBid = new Bid();
       newBid.userId = this.userName;
       newBid.propertyId = this.propertyId;
       newBid.value = model.value;
       newBid.createdDate = new Date();
-
+      this.submitted = true;
       this.bidService.createBid(newBid, this.userName, this.userToken)
         .subscribe(
           returnedBid => {
@@ -108,12 +124,28 @@ export class PropertyViewComponent implements OnInit {
             this.hide();
           });
       err => console.log(err);
-
+    }
+    else {
+      this.error = true;
     }
   }
 
+  findHighestBidder() {
+    let higestBid = 0
+    for (let i = 0; i < this.bidList.length; i++) {
+      if (this.bidList[i].value > higestBid) {
+        this.highestBid = this.bidList[i]
+      }
+    }
+  }
 
-
+  compare(a: Bid, b: Bid) {
+    if (a.value < b.value)
+      return -1;
+    if (a.value > b.value)
+      return 1;
+    return 0;
+  }
 
   logoutUser() {
     this.userService.logoutUser(this.userName, this.userToken)
@@ -126,6 +158,68 @@ export class PropertyViewComponent implements OnInit {
     err => console.log(err);
   }
 
+  setTimer(bidDate) {
+    var globalScope = this;
+
+    this.timer = setInterval(function () {
+      timeBetweenDates(bidDate);
+    }, 1000);
+
+    function timeBetweenDates(toDate) {
+      var dateEntered = new Date(toDate);
+      var now = new Date();
+      var difference = dateEntered.getTime() - now.getTime();
+
+      if (difference <= 0) {
+        clearInterval(globalScope.timer);
+      } else {
+
+        globalScope.seconds = Math.floor(difference / 1000);
+        globalScope.minutes = Math.floor(globalScope.seconds / 60);
+        globalScope.hours = Math.floor(globalScope.minutes / 60);
+        globalScope.days = Math.floor(globalScope.hours / 24);
+
+        globalScope.hours %= 24;
+        globalScope.minutes %= 60;
+        globalScope.seconds %= 60;
+      }
+    }
+  }
+
+  subscribeToBidSocket() {
+    var address = 'ws://localhost:8080/bidSocket/' + this.propertyId;
+    var connection = new WebSocket(address);
+    var globalScope = this;
+
+    connection.onopen = function () {
+      console.log("Connected to " + address)
+    };
+
+    connection.onclose = function () {
+      console.log("Disconnected from to " + address)
+    };
+
+    connection.onerror = function (error) {
+      console.log("Error occured with " + address + ": " + error)
+    };
+
+    connection.onmessage = function (message) {
+      try {
+        console.log(message.data)
+        var json = JSON.parse(message.data);
+        console.log(json);
+        let newList = [];
+        newList = json;
+        newList.sort(globalScope.compare);
+        globalScope.bidList = newList;
+        globalScope.findHighestBidder();
+      } catch (e) {
+        console.log('Error parsing JSON: ', message.data);
+        return;
+      }
+    };
+  }
+
   ngOnInit() {
     this.propertyId = this.route.snapshot.paramMap.get('property');
     this.userToken = this.localStorageService.get("token");
@@ -133,12 +227,14 @@ export class PropertyViewComponent implements OnInit {
     console.log(this.propertyId);
     this.property= new Property();
     this.getProperty();
-
-    this.bidForm = this.formBuilder.group({
-     value: [[<any>Validators.required]],
-    });
     this.getPropertyBids();
+    this.error = false;
+    this.highestBid = new Bid();
+    this.bidForm = this.formBuilder.group({
+      value: [this.highestBid.value, [<any>Validators.required, Validators.min(this.highestBid.value)]],
+    });
     this.subscribeToFormChanges();
+    this.subscribeToBidSocket();
 
 
     /*TODO

@@ -7,8 +7,11 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/property" routerLinkActive="active">Property Listing</a>
+      </li>
       <li class="nav-item" [hidden]="userName != null">
-        <a class="nav-link" href="/login">Login</a>
+        <a class="nav-link" routerLink="/login" routerLinkActive="active">Login</a>
       </li>
       <li class="nav-item dropdown" [hidden]="userName == null">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
@@ -16,7 +19,7 @@
           {{userName}}
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="/profile">Profile</a>
+          <a class="dropdown-item" routerLink="/profile" routerLinkActive="active">Profile</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" (click)="logoutUser()">Logout</a>
         </div>
@@ -25,54 +28,67 @@
   </div>
 </nav>
 
+<br><br>
 <div style="padding:0 16px;">
-  <ul class="table-title">
-    <li><h2>{{property.name}}</h2></li>
-  </ul>
-  <table class="table">
-    <thead class="thead-dark">
-    <tr>
-      <th class="col">Type</th>
-      <th class="col">Area Code</th>
-      <th class="col">Current Price</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td class="column">{{property.propertyType}}</td>
-      <td class="column">{{property.areaCode}}</td>
-      <td class="column">{{property.price}}</td>
-    </tr>
-    </tbody>
-  </table>
+  <div class="row">
+    <div class="col-lg-3">
+      <img class="card-img-top img-fluid" src="/assets/house.jpeg" alt="">
+    </div>
+    <div class="col-lg-9">
+      <div class="card mt-4">
 
-</div>
+        <div class="card-body">
+          <h3 class="card-title">{{property.name}}</h3>
+          <h4>€{{property.price}}</h4>
+          <p class="card-text">Type: {{property.propertyType}}<br>Area Code: {{property.areaCode}}</p>
+          <p>{{highestBid?.userId}} is the highest bidder!</p>
+          <div class="timer">
+            <span class="days"></span>{{days}} days
+            <span class="hours"></span>{{hours}} hours
+            <span class="minutes"></span>{{minutes}} minutes
+            <span class="seconds"></span>{{seconds}} seconds remaining
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="card mt-4">
+        <div style="padding: 16px">
+          <ul class="table-title">
+            <li><h2>Current Bids</h2></li>
+            <li class="right">
+              <button type="button" class="btn btn-primary btn-block" (click)="show()">Create Bid</button>
+            </li>
+          </ul>
+          <table class="table">
+            <thead class="thead">
+            <tr>
+              <th class="col">Name</th>
+              <th class="col">Bid Price</th>
+              <th class="col">Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let bid of bidList">
+              <td class="column">{{bid.userId}}</td>
+              <td class="column">{{bid.value}}</td>
+              <td class="column">{{bid.createdDate | date:"dd/MM/yyyy 'at' h:mm:ssa"}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-<div style="padding:0 16px;">
-  <ul class="table-title">
-    <li><h2>Current Bids</h2></li>
-    <li class="right">
-      <button class="create-button right" (click)="show()">Create Bid</button>
-    </li>
-  </ul>
-  <table class="table">
-    <thead class="thead-dark">
-    <tr>
-      <th class="col">Name</th>
-      <th class="col">Bid Price</th>
-      <th class="col">Date</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let bid of bidList">
-      <td class="column">{{bid.userId}}</td>
-      <td class="column">{{bid.value}}</td>
-      <td class="column">{{bid.createdDate | date:"dd/MM/yyyy 'at' h:mm:ssa"}}</td>
-    </tr>
-    </tbody>
-  </table>
+  </div>
 
-</div>
+  <br><br>
+  <div>
+
+
+  </div>
 
 
 
@@ -87,7 +103,9 @@
         <form [formGroup]="bidForm" novalidate (ngSubmit)="save(bidForm.value, bidForm.valid)">
           <div class="form-group">
             <label for="">Bid Value</label>
-            <input type="number" min="0.01" step="0.01" class="form-control" formControlName="value">
+            <input type="number" min="highestBid?.value" step="0.01" class="form-control" formControlName="value"
+                   value="highestBid?.value">
+            <small [hidden]="!error" class="text-danger">Bid must be higher than current max bid</small>
           </div>
           <div class="button-container">
             <button type="submit" class="create-button">

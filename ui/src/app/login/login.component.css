@@ -87,6 +87,11 @@
   -ms-box-shadow: 0 0px 40px 0px rgba(0, 0, 0, 0.15);
 }
 
+.modal-content {
+  width: 60%;
+  margin: 0 auto;
+}
+
 .button-container {
 	text-align: center;
 }
