@@ -98,6 +98,7 @@ export class LoginComponent implements OnInit {
         this.user = returnedUser,
         console.log(returnedUser)
         this.hide();
+        this.loginUser(username, password)
       });
       err => console.log(err);
   }
