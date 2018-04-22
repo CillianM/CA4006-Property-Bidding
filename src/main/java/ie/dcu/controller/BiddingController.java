@@ -5,6 +5,7 @@ import ie.dcu.model.Property;
 import ie.dcu.security.AuthProvider;
 import ie.dcu.service.StorageService;
 import ie.dcu.socket.BiddingClientSocket;
+import io.swagger.annotations.Api;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,13 +18,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 
+@Api
 @Path("/bid")
 public class BiddingController {
 
     private BiddingClientSocket client;
     private static HashMap<String, BiddingClientSocket> clients = new HashMap<>();
 
-    private final String webSocketAddress = "ws://localhost:8080/bidSocket";
+    private final String webSocketAddress = "ws://localhost:8080/CA4006/bidSocket";
 
     private void initializeWebSocket(String propertyId) throws URISyntaxException {
         System.out.println("REST service: open websocket client at " + webSocketAddress);

@@ -8,6 +8,8 @@ import {Property} from "../models/property";
 import {BidService} from "../services/bid-service";
 import {Bid, BidInterface} from "../models/bid";
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {BookingService} from '../services/booking-service';
+import {Booking, BookingInterface} from '../models/booking';
 
 @Component({
   selector: 'app-property-view',
@@ -25,6 +27,7 @@ export class PropertyViewComponent implements OnInit {
     private userService: UserService,
     private propertyService: PropertyService,
     private bidService: BidService,
+    private bookingService: BookingService,
     private globals: Globals) {
   }
 
@@ -33,10 +36,13 @@ export class PropertyViewComponent implements OnInit {
   propertyId: string;
   property: Property;
   bidList: Bid[];
+  bookingList: Booking[];
   bidForm: FormGroup;
+  bookingForm: FormGroup;
   createdBid: Bid;
   public events: any[] = [];
   public submitted: boolean;
+  public bookingError: boolean;
   public error: boolean;
   public ready: boolean;
   highestBid: Bid;
@@ -50,12 +56,14 @@ export class PropertyViewComponent implements OnInit {
 
   visible = false;
   visibleAnimate = false;
+  visibleBooking = false;
+  visibleBookingAnimate = false;
 
   show(): void {
     this.submitted = false;
     this.error = false;
     if (this.userToken == null && this.userName == null) {
-      window.location.href = '/ui/login';
+      window.location.href = this.globals.uiPath + "login";
     }
     this.visible = true;
     setTimeout(() => this.visibleAnimate = true, 100);
@@ -66,9 +74,25 @@ export class PropertyViewComponent implements OnInit {
     setTimeout(() => this.visible = false, 300);
   }
 
+  showBooking(): void {
+    this.submitted = false;
+    this.error = false;
+    if (this.userToken == null && this.userName == null) {
+      window.location.href = this.globals.uiPath + "login";
+    }
+    this.visibleBooking = true;
+    setTimeout(() => this.visibleBookingAnimate = true, 100);
+  }
+
+  hideBooking(): void {
+    this.visibleBookingAnimate = false;
+    setTimeout(() => this.visibleBooking = false, 300);
+  }
+
   onContainerClicked(event: MouseEvent): void {
     if ((<HTMLElement>event.target).classList.contains('modal')) {
       this.hide();
+      this.hideBooking();
     }
   }
 
@@ -95,9 +119,27 @@ export class PropertyViewComponent implements OnInit {
     err => console.log(err);
   }
 
+  getPropertyBookings() {
+    this.bookingService.getPropertyBookings(this.propertyId, this.userName, this.userToken)
+      .subscribe(
+        returnedBookingList => {
+          this.bookingList = returnedBookingList.sort(this.compareBooking)
+          console.log(returnedBookingList)
+        });
+    err => console.log(err);
+  }
+
   subscribeToFormChanges() {
     const myFormStatusChanges$ = this.bidForm.statusChanges;
     const myFormValueChanges$ = this.bidForm.valueChanges;
+
+    myFormStatusChanges$.subscribe(x => this.events.push({event: 'STATUS_CHANGED', object: x}));
+    myFormValueChanges$.subscribe(x => this.events.push({event: 'VALUE_CHANGED', object: x}));
+  }
+
+  subscribeToBookingFormChanges() {
+    const myFormStatusChanges$ = this.bookingForm.statusChanges;
+    const myFormValueChanges$ = this.bookingForm.valueChanges;
 
     myFormStatusChanges$.subscribe(x => this.events.push({event: 'STATUS_CHANGED', object: x}));
     myFormValueChanges$.subscribe(x => this.events.push({event: 'VALUE_CHANGED', object: x}));
@@ -110,6 +152,19 @@ export class PropertyViewComponent implements OnInit {
         .subscribe(
           returnedBid => {
             console.log(returnedBid);
+          });
+      err => console.log(err);
+    }
+  }
+
+  deleteBooking(index: number) {
+    console.log(index)
+    if (this.bookingList[index].userId == this.userName) {
+      this.bookingService.deleteBooking(this.bookingList[index].id, this.userName, this.userToken)
+        .subscribe(
+          returnedBid => {
+            console.log(returnedBid);
+            this.bookingList.splice(index);
           });
       err => console.log(err);
     }
@@ -144,6 +199,49 @@ export class PropertyViewComponent implements OnInit {
     }
   }
 
+  saveBooking(model: BookingInterface, isValid: boolean) {
+    console.log(model, isValid);
+    let bookingDate = new Date(model.bookingTime);
+    if (isValid && this.validBooking(bookingDate)) {
+      this.bookingError = false;
+      let newBooking = new Booking();
+      newBooking.userId = this.userName;
+      newBooking.propertyId = this.propertyId;
+      newBooking.bookingTime = bookingDate;
+      newBooking.id = "";
+      this.submitted = true;
+      this.bookingService.createBooking(newBooking, this.userName, this.userToken)
+        .subscribe(
+          returnedBooking => {
+            this.bookingList.push(newBooking);
+            this.bookingList.sort(this.compareBooking);
+            console.log(returnedBooking);
+            this.hideBooking();
+          });
+      err => console.log(err);
+    }
+    else {
+      this.bookingError = true;
+    }
+  }
+
+  validBooking(potentialBooking: Date) {
+    console.log(potentialBooking)
+    let propertyDate = new Date(this.property.biddingExpiry);
+    console.log(propertyDate)
+    if (potentialBooking <= propertyDate) {
+      for (let i = 0; i < this.bookingList.length; i++) {
+        let bookingDate = this.bookingList[i].bookingTime;
+        if (bookingDate == potentialBooking) {
+          return false;
+        }
+      }
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   findHighestBidder() {
     let higestBid = 0
     for (let i = 0; i < this.bidList.length; i++) {
@@ -151,6 +249,14 @@ export class PropertyViewComponent implements OnInit {
         this.highestBid = this.bidList[i]
       }
     }
+  }
+
+  compareBooking(a: Booking, b: Booking) {
+    if (a.bookingTime < b.bookingTime)
+      return -1;
+    if (a.bookingTime > b.bookingTime)
+      return 1;
+    return 0;
   }
 
   compare(a: Bid, b: Bid) {
@@ -167,7 +273,7 @@ export class PropertyViewComponent implements OnInit {
         returnedToken => {
           console.log(returnedToken)
           this.localStorageService.clearAll();
-          window.location.href = "/ui/property"
+          window.location.href = this.globals.uiPath + "property"
         });
     err => console.log(err);
   }
@@ -186,10 +292,10 @@ export class PropertyViewComponent implements OnInit {
 
       if (difference <= 0) {
         clearInterval(globalScope.timer);
-        globalScope.seconds = 0;
-        globalScope.days = 0;
-        globalScope.hours = 0;
-        globalScope.minutes = 0;
+        globalScope.seconds = -1;
+        globalScope.days = -1;
+        globalScope.hours = -1;
+        globalScope.minutes = -1;
       } else {
 
         globalScope.seconds = Math.floor(difference / 1000);
@@ -206,7 +312,7 @@ export class PropertyViewComponent implements OnInit {
   }
 
   subscribeToBidSocket() {
-    var address = 'ws://localhost:8080/bidSocket/' + this.propertyId;
+    var address = this.globals.websocket + this.propertyId;
     var connection = new WebSocket(address);
     var globalScope = this;
 
@@ -228,7 +334,7 @@ export class PropertyViewComponent implements OnInit {
         var json = JSON.parse(message.data);
         console.log(json);
         var audio = new Audio();
-        audio.src = "/ui/assets/notification.mp3";
+        audio.src = globalScope.globals.uiPath + "assets/notification.mp3";
         audio.load();
         audio.play();
         let newList = [];
@@ -248,18 +354,24 @@ export class PropertyViewComponent implements OnInit {
     this.propertyId = this.route.snapshot.paramMap.get('property');
     this.userToken = this.localStorageService.get("token");
     if (this.userToken == null)
-      window.location.href = "/ui/property"
+      window.location.href = this.globals.uiPath + "property"
     this.userName = this.localStorageService.get("user");
     console.log(this.propertyId);
     this.property= new Property();
     this.getProperty();
     this.getPropertyBids();
+    this.getPropertyBookings();
     this.error = false;
+    this.bookingError = false;
     this.highestBid = new Bid();
     this.bidForm = this.formBuilder.group({
       value: [this.highestBid.value, [<any>Validators.required, Validators.min(this.highestBid.value)]],
     });
+    this.bookingForm = this.formBuilder.group({
+      bookingTime: [new Date(), [<any>Validators.required]],
+    });
     this.subscribeToFormChanges();
+    this.subscribeToBookingFormChanges();
     this.subscribeToBidSocket();
 
 

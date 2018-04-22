@@ -3,6 +3,7 @@ package ie.dcu.controller;
 import ie.dcu.model.User;
 import ie.dcu.security.AuthProvider;
 import ie.dcu.service.StorageService;
+import io.swagger.annotations.Api;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +12,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+@Api
 @Path("/user")
 public class UserController {
 

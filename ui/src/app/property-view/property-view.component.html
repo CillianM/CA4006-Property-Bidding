@@ -32,7 +32,10 @@
 <div style="padding:0 16px;">
   <div class="row">
     <div class="col-lg-3">
-      <img class="card-img-top img-fluid" src="assets/house.jpeg" alt="">
+      <img [hidden]="property.propertyType == 'APARTMENT'" class="card-img-top img-fluid" src="assets/house.jpeg"
+           alt="Card image cap">
+      <img [hidden]="property.propertyType == 'HOUSE'" class="card-img-top" src="assets/apartment.jpg"
+           alt="Card image cap">
     </div>
     <div class="col-lg-9">
       <div class="card-group">
@@ -42,24 +45,33 @@
             <h4>€{{property.price}}</h4>
             <p class="card-text">Type: {{property.propertyType}}<br>Area Code: {{property.areaCode}}<br>Bedrooms:
               {{property.bedroomCount}}</p>
+            <ul class="table-title">
+              <li class="right">
+                <button type="button" class="btn btn-primary btn-block" (click)="showBooking()"
+                        [hidden]="!ready || seconds==-1">
+                  Create
+                  Booking
+                </button>
+              </li>
+            </ul>
           </div>
         </div>
         <div class="card mt-4">
           <div class="card-body" [hidden]="!ready">
             <h3 class="card-title">Bidding Information</h3>
             <div [hidden]="bidList?.length == 0">
-              <p [hidden]="seconds==0" [style.color]="highestBid?.userId != userName ? 'red' : 'green'">Current Highest
+              <p [hidden]="seconds==-1" [style.color]="highestBid?.userId != userName ? 'red' : 'green'">Current Highest
                 Bid: {{highestBid?.value}} ({{highestBid?.userId}})</p>
-              <p [hidden]="seconds!=0 || bidList?.length == 0"
+              <p [hidden]="seconds!=-1 || bidList?.length == 0"
                  [style.color]="highestBid?.userId != userName ? 'red' : 'green'">Highest Bidder:
                 {{highestBid?.userId}}</p>
             </div>
             <div class="timer">
-              <span class="days" [hidden]="days==0">{{days}} days</span>
-              <span class="hours" [hidden]="hours==0">{{hours}} hours</span>
-              <span class="minutes" [hidden]="minutes==0">{{minutes}} minutes</span>
-              <span class="seconds" [hidden]="seconds==0">{{seconds}} seconds remaining</span>
-              <span class="seconds" [hidden]="seconds!=0">Bidding Over!</span>
+              <span class="days" [hidden]="days==-1">{{days}} days</span>
+              <span class="hours" [hidden]="hours==-1">{{hours}} hours</span>
+              <span class="minutes" [hidden]="minutes==-1">{{minutes}} minutes</span>
+              <span class="seconds" [hidden]="seconds==-1">{{seconds}} seconds remaining</span>
+              <span class="seconds" [hidden]="seconds!=-1">Bidding Over!</span>
             </div>
           </div>
         </div>
@@ -74,7 +86,7 @@
           <ul class="table-title">
             <li><h2>Current Bids</h2></li>
             <li class="right">
-              <button type="button" class="btn btn-primary btn-block" (click)="show()" [hidden]="!ready || seconds==0">
+              <button type="button" class="btn btn-primary btn-block" (click)="show()" [hidden]="!ready || seconds==-1">
                 Create
                 Bid
               </button>
@@ -95,7 +107,7 @@
               <td class="column">{{bid.value}}</td>
               <td class="column">{{bid.createdDate | date:"dd/MM/yyyy 'at' h:mm:ssa"}}</td>
               <td class="column" [hidden]="bid.userId != userName">
-                <button [hidden]="!ready || seconds==0" type="button" class="btn btn-danger btn-sm"
+                <button [hidden]="!ready || seconds==-1" type="button" class="btn btn-danger btn-sm"
                         (click)="deleteBid(i)">Delete
                   Bid
                 </button>
@@ -145,3 +157,57 @@
     </div>
   </div>
 </div>
+
+  <div (click)="onContainerClicked($event)" class="modal fade" tabindex="-1" [ngClass]="{'show': visibleBookingAnimate}"
+       [ngStyle]="{'display': visibleBooking ? 'block' : 'none', 'opacity': visibleBookingAnimate ? 1 : 0}">
+    <div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Create Booking</h2>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="bookingForm" novalidate (ngSubmit)="saveBooking(bookingForm.value, bookingForm.valid)">
+            <div class="form-group">
+              <label for="">Bid Value</label>
+              <input type="datetime-local" class="form-control" formControlName="bookingTime">
+              <small [hidden]="!bookingError" class="text-danger">Booking Conflicts With Bidding Schedule Or Another
+                Booking
+              </small>
+            </div>
+            <div class="button-container">
+              <button type="submit" class="btn btn-primary btn-block">
+                <span>Submit</span>
+              </button>
+            </div>
+          </form>
+          <ul class="table-title">
+            <li><h2>Current Bookings</h2></li>
+          </ul>
+          <table class="table">
+            <thead class="thead">
+            <tr>
+              <th class="col">Name</th>
+              <th class="col">Booking Time</th>
+              <th class="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let booking of bookingList; let i = index">
+              <td class="column">{{booking.userId}}</td>
+              <td class="column">{{booking.bookingTime | date:"dd/MM/yyyy 'at' h:mm:ssa"}}</td>
+              <td class="column" [hidden]="booking.userId != userName">
+                <button [hidden]="!ready || seconds==-1" type="button" class="btn btn-danger btn-sm"
+                        (click)="deleteBooking(i)">Delete
+                  Booking
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>

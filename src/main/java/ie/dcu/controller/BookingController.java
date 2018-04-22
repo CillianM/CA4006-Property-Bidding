@@ -3,6 +3,7 @@ package ie.dcu.controller;
 import ie.dcu.model.Booking;
 import ie.dcu.security.AuthProvider;
 import ie.dcu.service.StorageService;
+import io.swagger.annotations.Api;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+@Api
 @Path("/booking")
 public class BookingController {
 

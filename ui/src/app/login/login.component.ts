@@ -4,6 +4,7 @@ import {User} from '../models/user';
 import {CookieService} from 'angular2-cookie/core';
 import {Token} from '../models/token';
 import {LocalStorageService} from 'angular-2-local-storage';
+import {Globals} from '../app-properties';
 
 
 @Component({
@@ -17,7 +18,9 @@ export class LoginComponent implements OnInit {
   constructor(
     private localStorageService: LocalStorageService,
     private userService:UserService,
-    private cookieService:CookieService) { }
+    private cookieService: CookieService,
+    private globals: Globals) {
+  }
 
   storage:Storage;
   user: User;
@@ -115,7 +118,7 @@ export class LoginComponent implements OnInit {
         console.log(returnedToken)
         this.localStorageService.set("token", returnedToken);
         this.localStorageService.set("user", username);
-        window.location.href = "/ui/property"
+        window.location.href = this.globals.uiPath + "property"
       });
       err => console.log(err);
   }

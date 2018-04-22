@@ -39,7 +39,10 @@
   <div class="container-fluid">
     <div class="row">
       <div class="card" style="width: 18rem;" *ngFor="let property of propertyList">
-        <img class="card-img-top" src="assets/house.jpeg" alt="Card image cap">
+        <img [hidden]="property.propertyType == 'APARTMENT'" class="card-img-top" src="assets/house.jpeg"
+             alt="Card image cap">
+        <img [hidden]="property.propertyType == 'HOUSE'" class="card-img-top" src="assets/apartment.jpg"
+             alt="Card image cap">
         <div class="card-body">
           <h5 class="card-title">{{property.name}}</h5>
           <p class="card-text">Type: {{property.propertyType}}<br>Area Code: {{property.areaCode}}<br>Price:

@@ -37,7 +37,7 @@ export class PropertyListComponent implements OnInit {
 
   show(): void {
     if (this.userToken == null && this.userName == null) {
-      window.location.href = '/ui/login';
+      window.location.href = this.globals.uiPath + "login";
     }
     this.visible = true;
     setTimeout(() => this.visibleAnimate = true, 100);
@@ -103,7 +103,7 @@ export class PropertyListComponent implements OnInit {
         returnedToken => {
           console.log(returnedToken)
           this.localStorageService.clearAll();
-          window.location.href = "/ui/property"
+          window.location.href = this.globals.uiPath + "property"
         });
     err => console.log(err);
   }

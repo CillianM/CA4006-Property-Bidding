@@ -4,3 +4,8 @@ export class Booking {
   propertyId: string;
   bookingTime: Date;
 }
+
+export interface BookingInterface {
+  bookingTime: Date;
+}
+

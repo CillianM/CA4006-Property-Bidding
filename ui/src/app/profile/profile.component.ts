@@ -40,7 +40,7 @@ export class ProfileComponent implements OnInit {
         returnedToken => {
           console.log(returnedToken)
           this.localStorageService.clearAll();
-          window.location.href = "/ui/property"
+          window.location.href = this.globals.uiPath + "property"
         });
     err => console.log(err);
   }
@@ -69,6 +69,8 @@ export class ProfileComponent implements OnInit {
     this.propertyId = this.route.snapshot.paramMap.get('property');
     this.userToken = this.localStorageService.get("token");
     this.userName = this.localStorageService.get("user");
+    if (this.userToken == null)
+      window.location.href = this.globals.uiPath + "property"
     console.log(this.propertyId)
     this.getBids();
     this.getBookings();
